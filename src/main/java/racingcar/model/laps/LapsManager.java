@@ -4,9 +4,9 @@ public class LapsManager {
     private final Laps laps;
     private final LapsDone lapsDone;
 
-    public LapsManager(Laps laps, LapsDone lapsDone) {
+    public LapsManager(Laps laps) {
         this.laps = laps;
-        this.lapsDone = lapsDone;
+        this.lapsDone = new LapsDone();
     }
 
     public int getCurrentLaps() {

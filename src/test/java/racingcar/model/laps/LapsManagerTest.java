@@ -9,38 +9,27 @@ import org.junit.jupiter.api.Test;
 
 public class LapsManagerTest {
     @Test
-    void 현재_랩_확인() {
-        int expected = 5;
-
-        Laps laps = mock(Laps.class);
-        LapsDone lapsDone = mock(LapsDone.class);
-        when(lapsDone.get()).thenReturn(expected);
-
-        assertThat(new LapsManager(laps, lapsDone).getCurrentLaps()).isEqualTo(expected);
+    void 초기화_현재_랩_0() {
+        assertThat(new LapsManager(mock(Laps.class)).getCurrentLaps()).isEqualTo(0);
     }
 
     @Test
     void 다음_랩_이동() {
-        LapsDone lapsDone = new LapsDone();
         Laps laps = mock(Laps.class);
         when(laps.get()).thenReturn(1000);
-        LapsManager lapsManager = new LapsManager(laps, lapsDone);
-
-        int expected = lapsDone.get() + 1;
+        LapsManager lapsManager = new LapsManager(laps);
 
         lapsManager.next();
 
-        assertThat(lapsManager.getCurrentLaps()).isEqualTo(expected);
+        assertThat(lapsManager.getCurrentLaps()).isEqualTo(1);
     }
 
     @Test
     void 다음_랩_이동_예외() {
         Laps laps = mock(Laps.class);
-        LapsDone lapsDone = mock(LapsDone.class);
-        when(laps.get()).thenReturn(10);
-        when(lapsDone.get()).thenReturn(10);
+        when(laps.get()).thenReturn(0);
 
-        LapsManager lapsManager = new LapsManager(laps, lapsDone);
+        LapsManager lapsManager = new LapsManager(laps);
 
         assertThatThrownBy(() -> lapsManager.next()).isInstanceOf(IllegalStateException.class);
     }
@@ -48,23 +37,17 @@ public class LapsManagerTest {
     @Test
     void 종료_여부_종료됨() {
         Laps laps = mock(Laps.class);
-        LapsDone lapsDone = mock(LapsDone.class);
-        when(laps.get()).thenReturn(10);
-        when(lapsDone.get()).thenReturn(10);
+        when(laps.get()).thenReturn(0);
 
-        LapsManager lapsManager = new LapsManager(laps, lapsDone);
-
-        assertThat(lapsManager.isFinished()).isTrue();
+        assertThat(new LapsManager(laps).isFinished()).isTrue();
     }
 
     @Test
     void 종료_여부_종료안됨() {
         Laps laps = mock(Laps.class);
-        LapsDone lapsDone = mock(LapsDone.class);
         when(laps.get()).thenReturn(10);
-        when(lapsDone.get()).thenReturn(9);
 
-        LapsManager lapsManager = new LapsManager(laps, lapsDone);
+        LapsManager lapsManager = new LapsManager(laps);
 
         assertThat(lapsManager.isFinished()).isFalse();
     }
